@@ -4,6 +4,7 @@ import com.MovieFlix.entity.Category;
 import com.MovieFlix.mapper.CategoryMapper;
 import com.MovieFlix.request.CategoryRequest;
 import com.MovieFlix.response.CategoryResponse;
+import com.MovieFlix.response.StreamingResponse;
 import com.MovieFlix.service.CategoryService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -39,9 +40,12 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(CategoryMapper.toCategoryResponse(CategorySaved));
     }
     @GetMapping("/buscar/{id}")
-    public ResponseEntity<CategoryResponse> buscarCategoryId(@PathVariable Long id){
+    public ResponseEntity<?> buscarCategoryId(@PathVariable Long id){
        Category category = categoryService.buscarCategoryId(id);
-       return ResponseEntity.ok(CategoryMapper.toCategoryResponse(category));
+       if (category != null){
+           CategoryResponse encontrada = CategoryMapper.toCategoryResponse(category);
+           return ResponseEntity.ok(encontrada);
+       }return ResponseEntity.status(HttpStatus.NOT_FOUND).body("nao enonctrada");
     }
     @DeleteMapping("/deletar/{id}")
     public ResponseEntity<?> deletarCategory(@PathVariable Long id){
